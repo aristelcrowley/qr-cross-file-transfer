@@ -22,7 +22,7 @@ func New(cfg *config.AppConfig) *fiber.App {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowMethods: "GET,POST,OPTIONS",
+		AllowMethods: "GET,POST,DELETE,OPTIONS",
 	}))
 
 	fh := handlers.NewFileHandler(cfg)
