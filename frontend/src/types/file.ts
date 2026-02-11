@@ -10,8 +10,8 @@ export interface FileListResponse {
 
 export interface UploadResponse {
   message: string;
-  filename: string;
-  size: number;
+  files: { filename: string; size: number }[];
+  count: number;
 }
 
 export interface ErrorResponse {
