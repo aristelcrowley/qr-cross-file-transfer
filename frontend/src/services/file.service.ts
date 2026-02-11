@@ -77,3 +77,17 @@ export async function listPCUploads(): Promise<FileListResponse> {
 export function getPCUploadUrl(filename: string): string {
   return `${API_BASE}/api/uploads/from-pc/download/${encodeURIComponent(filename)}`;
 }
+
+// ── Clear uploaded files ──
+
+export async function clearMobileUploads(): Promise<{ message: string; deleted: number }> {
+  const res = await fetch(`${API_BASE}/api/uploads/from-mobile`, { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to clear mobile uploads");
+  return res.json();
+}
+
+export async function clearPCUploads(): Promise<{ message: string; deleted: number }> {
+  const res = await fetch(`${API_BASE}/api/uploads/from-pc`, { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to clear PC uploads");
+  return res.json();
+}
