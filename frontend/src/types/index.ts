@@ -5,3 +5,4 @@ export type {
   UploadResponse,
   ErrorResponse,
 } from "./file";
+export type { SessionState, Role } from "./session";
