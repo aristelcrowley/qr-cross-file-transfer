@@ -1,14 +1,21 @@
-import type { FileListResponse, UploadResponse } from "@/types";
+import type { FileListResponse, UploadResponse, Role } from "@/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
+/**
+ * Upload files to the server. The `from` param tells the backend
+ * which sub-directory to store them in:
+ *   controller → uploads/from-mobile/
+ *   viewer     → uploads/from-pc/
+ */
 export async function uploadFiles(
   files: File[],
+  from: Role,
   onProgress?: (percent: number) => void
 ): Promise<UploadResponse> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${API_BASE}/api/upload`);
+    xhr.open("POST", `${API_BASE}/api/upload?from=${from}`);
 
     if (onProgress) {
       xhr.upload.onprogress = (e) => {
@@ -35,6 +42,8 @@ export async function uploadFiles(
   });
 }
 
+// ── Shared files (PC's share directory) ──
+
 export async function listSharedFiles(): Promise<FileListResponse> {
   const res = await fetch(`${API_BASE}/api/files`);
   if (!res.ok) throw new Error("Failed to list shared files");
@@ -45,12 +54,26 @@ export function getSharedFileUrl(filename: string): string {
   return `${API_BASE}/api/download/${encodeURIComponent(filename)}`;
 }
 
-export async function listUploadedFiles(): Promise<FileListResponse> {
-  const res = await fetch(`${API_BASE}/api/uploads`);
-  if (!res.ok) throw new Error("Failed to list uploaded files");
+// ── Files uploaded by phone (for PC to receive) ──
+
+export async function listMobileUploads(): Promise<FileListResponse> {
+  const res = await fetch(`${API_BASE}/api/uploads/from-mobile`);
+  if (!res.ok) throw new Error("Failed to list mobile uploads");
   return res.json();
 }
 
-export function getUploadedFileUrl(filename: string): string {
-  return `${API_BASE}/api/uploads/download/${encodeURIComponent(filename)}`;
+export function getMobileUploadUrl(filename: string): string {
+  return `${API_BASE}/api/uploads/from-mobile/download/${encodeURIComponent(filename)}`;
+}
+
+// ── Files uploaded by PC (for phone to receive) ──
+
+export async function listPCUploads(): Promise<FileListResponse> {
+  const res = await fetch(`${API_BASE}/api/uploads/from-pc`);
+  if (!res.ok) throw new Error("Failed to list PC uploads");
+  return res.json();
+}
+
+export function getPCUploadUrl(filename: string): string {
+  return `${API_BASE}/api/uploads/from-pc/download/${encodeURIComponent(filename)}`;
 }

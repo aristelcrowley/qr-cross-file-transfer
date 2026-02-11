@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { getRole } from "@/hooks/useRole";
 import {
   uploadFiles as uploadFilesService,
-  listSharedFiles,
-  listUploadedFiles,
-  getSharedFileUrl,
-  getUploadedFileUrl,
+  listMobileUploads,
+  listPCUploads,
+  getMobileUploadUrl,
+  getPCUploadUrl,
 } from "@/services/file.service";
-import type { FileEntry } from "@/types";
+import type { FileEntry, Role } from "@/types";
+
+// ── useUpload ──
 
 interface UseUploadReturn {
   selected: File[];
@@ -29,6 +31,12 @@ export function useUpload(): UseUploadReturn {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const roleRef = useRef<Role>("controller");
+
+  // Resolve role after hydration.
+  useEffect(() => {
+    roleRef.current = getRole() ?? "controller";
+  }, []);
 
   const addFiles = useCallback((files: FileList | File[]) => {
     const arr = Array.from(files);
@@ -51,7 +59,7 @@ export function useUpload(): UseUploadReturn {
     setProgress(0);
     setError(null);
     try {
-      await uploadFilesService(selected, setProgress);
+      await uploadFilesService(selected, roleRef.current, setProgress);
       setDone(true);
       setSelected([]);
     } catch (err) {
@@ -72,6 +80,8 @@ export function useUpload(): UseUploadReturn {
   return { selected, addFiles, removeFile, upload, uploading, progress, done, error, reset };
 }
 
+// ── useFileList ──
+
 interface UseFileListReturn {
   files: FileEntry[];
   loading: boolean;
@@ -80,6 +90,13 @@ interface UseFileListReturn {
   getDownloadUrl: (filename: string) => string;
 }
 
+/**
+ * Fetches the file list the *other* side uploaded:
+ * - viewer (PC) → from-mobile dir (files the phone sent)
+ * - controller (phone) → from-pc dir (files the PC sent)
+ *
+ * Polls every `intervalMs` for changes.
+ */
 export function useFileList(intervalMs = 3000): UseFileListReturn {
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,6 +104,7 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
   const [viewer, setViewer] = useState(false);
   const viewerRef = useRef(false);
 
+  // Resolve role after hydration.
   useEffect(() => {
     const v = getRole() === "viewer";
     setViewer(v);
@@ -97,9 +115,10 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
     setLoading(true);
     setError(null);
     try {
+      // Viewer (PC) sees what mobile uploaded, controller (phone) sees what PC uploaded.
       const res = viewerRef.current
-        ? await listUploadedFiles()
-        : await listSharedFiles();
+        ? await listMobileUploads()
+        : await listPCUploads();
       setFiles(res.files.filter((f) => !f.isDir));
     } catch {
       setError("Failed to load file list");
@@ -108,6 +127,7 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
     }
   }, []);
 
+  // Fetch on mount + poll.
   useEffect(() => {
     const resolved = getRole() !== null;
     if (!resolved) return;
@@ -120,8 +140,8 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
   const getDownloadUrl = useCallback(
     (filename: string) =>
       viewerRef.current
-        ? getUploadedFileUrl(filename)
-        : getSharedFileUrl(filename),
+        ? getMobileUploadUrl(filename)
+        : getPCUploadUrl(filename),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [viewer]
   );
