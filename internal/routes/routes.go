@@ -6,15 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetUpRoutes(app *fiber.App, fh *handlers.FileHandler, uh *handlers.UploadHandler) {
+func SetUpRoutes(app *fiber.App, fh *handlers.FileHandler, uh *handlers.UploadHandler, sh *handlers.SessionHandler) {
 	api := app.Group("/api")
 
 	FileRoutes(api, fh)
 	UploadRoutes(api, uh)
+	SessionRoutes(api, sh)
 
-	// QR code image endpoint — returns a PNG of the server's network URL.
-	api.Get("/qr", fh.GetQRCode)
-
-	// Server info endpoint — returns config metadata for the frontend.
-	api.Get("/info", fh.GetServerInfo)
 }

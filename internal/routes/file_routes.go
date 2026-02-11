@@ -9,4 +9,6 @@ import (
 func FileRoutes(api fiber.Router, fh *handlers.FileHandler) {
 	api.Get("/files", fh.ListFiles)
 	api.Get("/download/:filename", fh.DownloadFile)
+	api.Get("/qr", fh.GetQRCode)
+	api.Get("/info", fh.GetServerInfo)
 }
