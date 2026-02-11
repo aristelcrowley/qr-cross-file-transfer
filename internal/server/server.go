@@ -11,6 +11,7 @@ import (
 	"qr-cross-file-transfer/internal/config"
 	"qr-cross-file-transfer/internal/handlers"
 	"qr-cross-file-transfer/internal/routes"
+	"qr-cross-file-transfer/internal/session"
 )
 
 func New(cfg *config.AppConfig) *fiber.App {
@@ -26,8 +27,9 @@ func New(cfg *config.AppConfig) *fiber.App {
 
 	fh := handlers.NewFileHandler(cfg)
 	uh := handlers.NewUploadHandler(cfg)
+	sh := handlers.NewSessionHandler(session.New())
 
-	routes.SetUpRoutes(app, fh, uh)
+	routes.SetUpRoutes(app, fh, uh, sh)
 
 	frontendDir, _ := filepath.Abs(cfg.FrontendDir)
 	if info, err := os.Stat(frontendDir); err == nil && info.IsDir() {
