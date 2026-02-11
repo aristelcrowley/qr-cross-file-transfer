@@ -73,7 +73,7 @@ func (h *FileHandler) DownloadFile(c *fiber.Ctx) error {
 }
 
 func (h *FileHandler) GetQRCode(c *fiber.Ctx) error {
-	png, err := qrcode.Encode(h.cfg.NetworkURL, qrcode.Medium, 256)
+	png, err := qrcode.Encode(h.cfg.NetworkURL+"/action", qrcode.Medium, 256)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
 			Error: fmt.Sprintf("failed to generate QR code: %v", err),
