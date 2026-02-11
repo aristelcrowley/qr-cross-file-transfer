@@ -29,30 +29,23 @@ func New(cfg *config.AppConfig) *fiber.App {
 
 	routes.SetUpRoutes(app, fh, uh)
 
-	// Serve the Next.js static export for all non-API routes.
 	frontendDir, _ := filepath.Abs(cfg.FrontendDir)
 	if info, err := os.Stat(frontendDir); err == nil && info.IsDir() {
 		log.Printf("Serving frontend from %s", frontendDir)
 
-		// Serve static assets (JS, CSS, images, etc.)
 		app.Static("/", frontendDir, fiber.Static{
 			Index: "index.html",
 		})
 
-		// SPA-style fallback: for any unmatched route that has a
-		// corresponding .html file from the static export, serve it.
 		app.Use(func(c *fiber.Ctx) error {
-			// Try <path>.html  (Next.js exports /action → action.html)
 			htmlFile := filepath.Join(frontendDir, c.Path()+".html")
 			if _, err := os.Stat(htmlFile); err == nil {
 				return c.SendFile(htmlFile)
 			}
-			// Try <path>/index.html
 			indexFile := filepath.Join(frontendDir, c.Path(), "index.html")
 			if _, err := os.Stat(indexFile); err == nil {
 				return c.SendFile(indexFile)
 			}
-			// Fall back to root index.html
 			return c.SendFile(filepath.Join(frontendDir, "index.html"))
 		})
 	} else {

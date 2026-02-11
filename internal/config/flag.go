@@ -16,6 +16,7 @@ func ParseFlags() *AppConfig {
 	flag.StringVar(&cfg.Interface, "interface", "", "override LAN IP address (e.g. 192.168.1.50)")
 	flag.StringVar(&cfg.ShareDir, "share", ".", "directory to share for download")
 	flag.StringVar(&cfg.UploadDir, "uploads", "./uploads", "directory to save uploaded files")
+	flag.StringVar(&cfg.FrontendDir, "frontend", "./frontend/out", "path to Next.js static export directory")
 	flag.Parse()
 
 	cfg.LanIP = cfg.Interface
