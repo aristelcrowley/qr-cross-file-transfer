@@ -18,7 +18,9 @@ func main() {
 	fmt.Printf("  Share:   %s\n", cfg.ShareDir)
 	fmt.Printf("  Uploads: %s\n", cfg.UploadDir)
 
-	if err := utils.GenerateQR(cfg.NetworkURL); err != nil {
+	fmt.Printf("  Frontend: %s\n", cfg.FrontendDir)
+
+	if err := utils.GenerateQR(cfg.NetworkURL + "/action"); err != nil {
 		log.Printf("Warning: could not render QR code: %v", err)
 	}
 
