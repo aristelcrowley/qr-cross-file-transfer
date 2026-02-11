@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	qrcode "github.com/skip2/go-qrcode"
@@ -28,16 +29,40 @@ func (h *FileHandler) ListFiles(c *fiber.Ctx) error {
 		})
 	}
 
+	hidden := map[string]bool{
+		".git": true, ".gitignore": true, ".gitattributes": true,
+		".env": true, ".env.development": true, ".env.local": true,
+		"go.mod": true, "go.sum": true, "go.work": true, "go.work.sum": true,
+		"node_modules": true, ".next": true, "package-lock.json": true,
+		"tsconfig.json": true, "tsconfig.tsbuildinfo": true,
+		"next.config.ts": true, "next.config.js": true, "next.config.mjs": true,
+		"postcss.config.mjs": true, "eslint.config.mjs": true,
+		"Makefile": true, "Dockerfile": true, "docker-compose.yml": true,
+		".DS_Store": true, "Thumbs.db": true,
+	}
+
 	files := make([]dto.FileInfo, 0, len(entries))
 	for _, e := range entries {
+		name := e.Name()
+
+		if strings.HasPrefix(name, ".") {
+			continue
+		}
+		if hidden[name] {
+			continue
+		}
+		if e.IsDir() {
+			continue
+		}
+
 		info, err := e.Info()
 		if err != nil {
 			continue
 		}
 		files = append(files, dto.FileInfo{
-			Name:  e.Name(),
+			Name:  name,
 			Size:  info.Size(),
-			IsDir: e.IsDir(),
+			IsDir: false,
 		})
 	}
 
