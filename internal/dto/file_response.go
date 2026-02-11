@@ -9,7 +9,3 @@ type FileInfo struct {
 type FileListResponse struct {
 	Files []FileInfo `json:"files"`
 }
-
-type ErrorResponse struct {
-	Error string `json:"error"`
-}
