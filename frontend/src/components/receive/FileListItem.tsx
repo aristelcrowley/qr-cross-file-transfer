@@ -20,7 +20,7 @@ export default function FileListItem({ file, downloadUrl }: FileListItemProps) {
       <a
         href={downloadUrl}
         download
-        className="clay-btn text-xs !py-2 !px-4 shrink-0"
+        className="clay-btn text-xs py-2! px-4! shrink-0"
       >
         Download
       </a>
