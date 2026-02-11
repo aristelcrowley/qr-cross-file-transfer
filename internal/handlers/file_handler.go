@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -70,11 +71,16 @@ func (h *FileHandler) ListFiles(c *fiber.Ctx) error {
 }
 
 func (h *FileHandler) DownloadFile(c *fiber.Ctx) error {
-	filename := c.Params("filename")
-	if filename == "" {
+	raw := c.Params("filename")
+	if raw == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
 			Error: "filename is required",
 		})
+	}
+
+	filename, err := url.PathUnescape(raw)
+	if err != nil {
+		filename = raw
 	}
 
 	target := filepath.Join(h.cfg.ShareDir, filepath.Clean(filename))
