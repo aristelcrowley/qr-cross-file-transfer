@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
+	qrcode "github.com/skip2/go-qrcode"
 
 	"qr-cross-file-transfer/internal/config"
 	"qr-cross-file-transfer/internal/dto"
@@ -53,7 +54,6 @@ func (h *FileHandler) DownloadFile(c *fiber.Ctx) error {
 
 	target := filepath.Join(h.cfg.ShareDir, filepath.Clean(filename))
 
-	// Prevent path traversal.
 	absShare, _ := filepath.Abs(h.cfg.ShareDir)
 	absTarget, _ := filepath.Abs(target)
 	if len(absTarget) < len(absShare) || absTarget[:len(absShare)] != absShare {
@@ -70,4 +70,25 @@ func (h *FileHandler) DownloadFile(c *fiber.Ctx) error {
 
 	c.Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
 	return c.SendFile(target)
+}
+
+func (h *FileHandler) GetQRCode(c *fiber.Ctx) error {
+	png, err := qrcode.Encode(h.cfg.NetworkURL, qrcode.Medium, 256)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+			Error: fmt.Sprintf("failed to generate QR code: %v", err),
+		})
+	}
+
+	c.Set("Content-Type", "image/png")
+	return c.Send(png)
+}
+
+func (h *FileHandler) GetServerInfo(c *fiber.Ctx) error {
+	return c.JSON(dto.ServerInfoResponse{
+		NetworkURL: h.cfg.NetworkURL,
+		Port:       h.cfg.Port,
+		ShareDir:   h.cfg.ShareDir,
+		UploadDir:  h.cfg.UploadDir,
+	})
 }
