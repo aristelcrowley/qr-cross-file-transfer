@@ -2,9 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"qr-cross-file-transfer/internal/ip"
+	"qr-cross-file-transfer/internal/server"
 )
 
 func main() {
@@ -18,5 +20,20 @@ func main() {
 			log.Fatalf("Could not detect LAN IP: %v", err)
 		}
 		lanIP = detected
+	}
+
+	
+	port := flag.Int("port", 8080, "port to listen on")
+	addr := fmt.Sprintf(":%d", *port)
+	url := fmt.Sprintf("http://%s:%d", lanIP, *port)
+
+
+	fmt.Printf("  Local:   http://localhost:%d\n", *port)
+	fmt.Printf("  Network: %s\n", url)
+
+	app := server.New()
+
+	if err := app.Listen(addr); err != nil {
+		log.Fatalf("Server failed: %v", err)
 	}
 }
