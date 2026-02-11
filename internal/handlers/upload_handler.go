@@ -19,6 +19,14 @@ func NewUploadHandler(cfg *config.AppConfig) *UploadHandler {
 	return &UploadHandler{cfg: cfg}
 }
 
+func (h *UploadHandler) resolveUploadDir(c *fiber.Ctx) string {
+	from := c.Query("from", "")
+	if from == "viewer" {
+		return h.cfg.PCUploadDir
+	}
+	return h.cfg.MobileUploadDir
+}
+
 func (h *UploadHandler) UploadFile(c *fiber.Ctx) error {
 	form, err := c.MultipartForm()
 	if err != nil {
@@ -37,7 +45,8 @@ func (h *UploadHandler) UploadFile(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := os.MkdirAll(h.cfg.UploadDir, 0o755); err != nil {
+	uploadDir := h.resolveUploadDir(c)
+	if err := os.MkdirAll(uploadDir, 0o755); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
 			Error: fmt.Sprintf("cannot create upload directory: %v", err),
 		})
@@ -45,7 +54,7 @@ func (h *UploadHandler) UploadFile(c *fiber.Ctx) error {
 
 	saved := make([]dto.UploadedFileInfo, 0, len(files))
 	for _, file := range files {
-		dest := filepath.Join(h.cfg.UploadDir, filepath.Base(file.Filename))
+		dest := filepath.Join(uploadDir, filepath.Base(file.Filename))
 		if err := c.SaveFile(file, dest); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
 				Error: fmt.Sprintf("failed to save %s: %v", file.Filename, err),
@@ -64,8 +73,8 @@ func (h *UploadHandler) UploadFile(c *fiber.Ctx) error {
 	})
 }
 
-func (h *UploadHandler) ListUploads(c *fiber.Ctx) error {
-	entries, err := os.ReadDir(h.cfg.UploadDir)
+func (h *UploadHandler) listDir(dir string, c *fiber.Ctx) error {
+	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return c.JSON(dto.FileListResponse{Files: []dto.FileInfo{}})
@@ -94,7 +103,15 @@ func (h *UploadHandler) ListUploads(c *fiber.Ctx) error {
 	return c.JSON(dto.FileListResponse{Files: files})
 }
 
-func (h *UploadHandler) DownloadUpload(c *fiber.Ctx) error {
+func (h *UploadHandler) ListMobileUploads(c *fiber.Ctx) error {
+	return h.listDir(h.cfg.MobileUploadDir, c)
+}
+
+func (h *UploadHandler) ListPCUploads(c *fiber.Ctx) error {
+	return h.listDir(h.cfg.PCUploadDir, c)
+}
+
+func (h *UploadHandler) downloadFrom(dir string, c *fiber.Ctx) error {
 	filename := c.Params("filename")
 	if filename == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(dto.ErrorResponse{
@@ -102,11 +119,11 @@ func (h *UploadHandler) DownloadUpload(c *fiber.Ctx) error {
 		})
 	}
 
-	target := filepath.Join(h.cfg.UploadDir, filepath.Clean(filename))
+	target := filepath.Join(dir, filepath.Clean(filename))
 
-	absUpload, _ := filepath.Abs(h.cfg.UploadDir)
+	absDir, _ := filepath.Abs(dir)
 	absTarget, _ := filepath.Abs(target)
-	if len(absTarget) < len(absUpload) || absTarget[:len(absUpload)] != absUpload {
+	if len(absTarget) < len(absDir) || absTarget[:len(absDir)] != absDir {
 		return c.Status(fiber.StatusForbidden).JSON(dto.ErrorResponse{
 			Error: "access denied",
 		})
@@ -120,4 +137,12 @@ func (h *UploadHandler) DownloadUpload(c *fiber.Ctx) error {
 
 	c.Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
 	return c.SendFile(target)
+}
+
+func (h *UploadHandler) DownloadMobileUpload(c *fiber.Ctx) error {
+	return h.downloadFrom(h.cfg.MobileUploadDir, c)
+}
+
+func (h *UploadHandler) DownloadPCUpload(c *fiber.Ctx) error {
+	return h.downloadFrom(h.cfg.PCUploadDir, c)
 }

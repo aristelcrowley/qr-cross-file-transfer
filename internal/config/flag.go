@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"qr-cross-file-transfer/internal/ip"
 )
@@ -28,8 +29,13 @@ func ParseFlags() *AppConfig {
 		cfg.LanIP = detected
 	}
 
-	if err := os.MkdirAll(cfg.UploadDir, 0o755); err != nil {
-		log.Fatalf("Cannot create upload directory: %v", err)
+	cfg.MobileUploadDir = filepath.Join(cfg.UploadDir, "from-mobile")
+	cfg.PCUploadDir = filepath.Join(cfg.UploadDir, "from-pc")
+
+	for _, dir := range []string{cfg.MobileUploadDir, cfg.PCUploadDir} {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			log.Fatalf("Cannot create upload directory %s: %v", dir, err)
+		}
 	}
 
 	cfg.NetworkURL = fmt.Sprintf("http://%s:%d", cfg.LanIP, cfg.Port)

@@ -8,6 +8,10 @@ import (
 
 func UploadRoutes(api fiber.Router, uh *handlers.UploadHandler) {
 	api.Post("/upload", uh.UploadFile)
-	api.Get("/uploads", uh.ListUploads)
-	api.Get("/uploads/download/:filename", uh.DownloadUpload)
+
+	api.Get("/uploads/from-mobile", uh.ListMobileUploads)
+	api.Get("/uploads/from-mobile/download/:filename", uh.DownloadMobileUpload)
+
+	api.Get("/uploads/from-pc", uh.ListPCUploads)
+	api.Get("/uploads/from-pc/download/:filename", uh.DownloadPCUpload)
 }
