@@ -29,8 +29,21 @@ echo  Backend built  -^> bin/qr-cross-file-transfer.exe
 
 echo.
 echo [3/3] Starting server on port %PORT%...
-start http://localhost:%PORT%
-echo  Opened http://localhost:%PORT% in default browser
+
+netstat -aon 2>nul | findstr ":%PORT% " | findstr "LISTENING" >nul 2>&1
+if %errorlevel% equ 0 (
+    for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":%PORT% " ^| findstr "LISTENING"') do (
+        echo  Killing old process on port %PORT% (PID %%a^)...
+        taskkill /F /PID %%a >nul 2>&1
+    )
+    timeout /t 1 /nobreak >nul
+)
+
+start "" cmd /c "timeout /t 2 /nobreak >nul & start http://localhost:%PORT%"
+
+echo  Server running at http://localhost:%PORT%
+echo  Browser will open shortly...
+echo  Press Ctrl+C to stop.
 echo.
 
 bin\qr-cross-file-transfer.exe --port %PORT% --share %SHARE%
