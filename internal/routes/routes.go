@@ -1,12 +1,14 @@
 package routes
 
 import (
-	"qr-cross-file-transfer/internal/controllers"
+	"qr-cross-file-transfer/internal/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterRoutes(app *fiber.App, fc *controllers.FileController, uc *controllers.UploadController) {
-	FileRoutes(app, fc)
-	UploadRoutes(app, uc)
+func SetUpRoutes(app *fiber.App, fh *handlers.FileHandler, uh *handlers.UploadHandler) {
+	api := app.Group("/api")
+
+	FileRoutes(api, fh)
+	UploadRoutes(api, uh)
 }

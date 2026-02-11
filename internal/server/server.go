@@ -4,11 +4,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 
-	"qr-cross-file-transfer/internal/controllers"
+	"qr-cross-file-transfer/internal/config"
+	"qr-cross-file-transfer/internal/handlers"
 	"qr-cross-file-transfer/internal/routes"
 )
 
-func New(shareDir, uploadDir string) *fiber.App {
+func New(cfg *config.AppConfig) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName: "qr-cross-file-transfer",
 		BodyLimit: 2 * 1024 * 1024 * 1024,
@@ -19,10 +20,10 @@ func New(shareDir, uploadDir string) *fiber.App {
 		AllowMethods: "GET,POST,OPTIONS",
 	}))
 
-	fc := controllers.NewFileController(shareDir)
-	uc := controllers.NewUploadController(uploadDir)
+	fh := handlers.NewFileHandler(cfg)
+	uh := handlers.NewUploadHandler(cfg)
 
-	routes.RegisterRoutes(app, fc, uc)
+	routes.SetUpRoutes(app, fh, uh)
 
 	return app
 }

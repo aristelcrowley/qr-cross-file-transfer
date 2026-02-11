@@ -1,12 +1,12 @@
 package routes
 
 import (
-	"qr-cross-file-transfer/internal/controllers"
+	"qr-cross-file-transfer/internal/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func FileRoutes(api *fiber.App, fc *controllers.FileController) {
-	api.Get("/files", fc.ListFiles)
-	api.Get("/download/:filename", fc.DownloadFile)
+func FileRoutes(api fiber.Router, fh *handlers.FileHandler) {
+	api.Get("/files", fh.ListFiles)
+	api.Get("/download/:filename", fh.DownloadFile)
 }
