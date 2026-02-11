@@ -152,3 +152,36 @@ func (h *UploadHandler) DownloadMobileUpload(c *fiber.Ctx) error {
 func (h *UploadHandler) DownloadPCUpload(c *fiber.Ctx) error {
 	return h.downloadFrom(h.cfg.PCUploadDir, c)
 }
+
+func (h *UploadHandler) clearDir(dir string, c *fiber.Ctx) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return c.JSON(fiber.Map{"message": "already empty", "deleted": 0})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+			Error: fmt.Sprintf("cannot read directory: %v", err),
+		})
+	}
+
+	deleted := 0
+	for _, e := range entries {
+		path := filepath.Join(dir, e.Name())
+		if err := os.RemoveAll(path); err == nil {
+			deleted++
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"message": fmt.Sprintf("%d file(s) deleted", deleted),
+		"deleted": deleted,
+	})
+}
+
+func (h *UploadHandler) ClearMobileUploads(c *fiber.Ctx) error {
+	return h.clearDir(h.cfg.MobileUploadDir, c)
+}
+
+func (h *UploadHandler) ClearPCUploads(c *fiber.Ctx) error {
+	return h.clearDir(h.cfg.PCUploadDir, c)
+}

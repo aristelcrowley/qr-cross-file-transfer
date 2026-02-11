@@ -14,4 +14,7 @@ func UploadRoutes(api fiber.Router, uh *handlers.UploadHandler) {
 
 	api.Get("/uploads/from-pc", uh.ListPCUploads)
 	api.Get("/uploads/from-pc/download/:filename", uh.DownloadPCUpload)
+
+	api.Delete("/uploads/from-mobile", uh.ClearMobileUploads)
+	api.Delete("/uploads/from-pc", uh.ClearPCUploads)
 }
