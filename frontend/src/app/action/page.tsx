@@ -1,12 +1,19 @@
+"use client";
+
 import ActionGrid from "@/components/actions/ActionGrid";
 import Footer from "@/components/layout/Footer";
-import BackLink from "@/components/layout/BackLink";
+import { useEffect } from "react";
+import { setRole } from "@/hooks/useRole";
+import { setSessionState } from "@/services/session.service";
 
 export default function ActionPage() {
+  useEffect(() => {
+    setRole("controller");
+    setSessionState("WAITING");
+  }, []);
+
   return (
     <>
-      <BackLink href="/" label="Home" />
-
       <section className="text-center space-y-2">
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-clay-heading">
           What would you like to do?

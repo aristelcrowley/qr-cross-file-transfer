@@ -10,12 +10,14 @@ export default function ActionGrid() {
         icon="📤"
         title="Send"
         description="Share files from this device to the other."
+        sessionState="SENDING"
       />
       <ActionCard
         href="/receive"
         icon="📥"
         title="Receive"
         description="Download files shared from the connected device."
+        sessionState="RECEIVING"
       />
     </div>
   );

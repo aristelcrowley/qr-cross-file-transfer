@@ -1,12 +1,15 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { SessionState } from "@/types";
+import { setSessionState } from "@/services/session.service";
 
 interface ActionCardProps {
   href: string;
   icon: string;
   title: string;
   description: string;
+  sessionState: SessionState;
 }
 
 export default function ActionCard({
@@ -14,14 +17,22 @@ export default function ActionCard({
   icon,
   title,
   description,
+  sessionState,
 }: ActionCardProps) {
+  const router = useRouter();
+
+  const handleClick = async () => {
+    await setSessionState(sessionState);
+    router.push(href);
+  };
+
   return (
-    <Link href={href} className="block group">
+    <button onClick={handleClick} className="block group text-left w-full">
       <div className="clay-card p-7 sm:p-8 text-center group-hover:scale-[1.03] group-active:scale-[0.98] transition-all duration-200">
         <span className="text-4xl sm:text-5xl block mb-4">{icon}</span>
         <h3 className="text-lg font-bold text-clay-heading mb-1">{title}</h3>
         <p className="text-sm text-clay-muted leading-relaxed">{description}</p>
       </div>
-    </Link>
+    </button>
   );
 }
