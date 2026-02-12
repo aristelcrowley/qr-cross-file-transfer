@@ -76,6 +76,15 @@ A QR code will appear in your terminal. Open your browser to the URL shown (or s
 
 ---
 
+## Network & Firewall (Important)
+This tool works by turning your PC into a local web server. For your phone to reach it:
+
+1. Same Wi-Fi: Ensure your phone is not on 4G/5G data. It must be on the same Wi-Fi network as your PC.
+2. Firewall: On Windows, you may see a "Windows Defender Firewall" popup when you first run the app. You must check "Private networks" and click "Allow access". If the site fails to load on your phone: Temporarily disable your firewall or allow the port (default 8080) through.
+3. Isolation: Some public Wi-Fi networks (cafes, universities) have "AP Isolation" enabled, which prevents devices from talking to each other. This tool will not work on those networks; use a mobile hotspot instead.
+
+---
+
 ## How It Works
 
 ```
