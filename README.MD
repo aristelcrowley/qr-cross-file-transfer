@@ -191,7 +191,7 @@ qr-cross-file-transfer/
 - **go-qrcode** — terminal and PNG QR code generation
 
 **Frontend**
-- **Next.js 16** — static export (`output: "export"`) served directly by Go
+- **Next.js 15** — static export (`output: "export"`) served directly by Go
 - **React 19** — component-based UI
 - **Tailwind CSS 4** — utility-first styling with a custom claymorphism design system
 - **TypeScript 5** — type safety across the frontend
