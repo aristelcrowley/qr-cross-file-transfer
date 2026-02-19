@@ -8,6 +8,15 @@ set SHARE=.
 echo.
 echo [1/3] Building frontend...
 cd frontend
+if not exist node_modules (
+    echo  Installing dependencies...
+    call npm install
+    if %errorlevel% neq 0 (
+        echo  npm install failed!
+        pause
+        exit /b 1
+    )
+)
 call npx next build
 if %errorlevel% neq 0 (
     echo  Frontend build failed!
