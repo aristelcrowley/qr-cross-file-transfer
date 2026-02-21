@@ -33,7 +33,7 @@ export default function DropZone({ onFiles }: DropZoneProps) {
       className={`clay-inset rounded-2xl p-10 text-center cursor-pointer transition-all duration-300 border border-dashed ${
         dragging
           ? "border-indigo-500/50 bg-indigo-500/5 scale-[1.01]"
-          : "border-white/10 hover:border-indigo-500/30 hover:bg-white/[0.02]"
+          : "border-white/10 hover:border-indigo-500/30 hover:bg-white/2"
       }`}
     >
       <input
