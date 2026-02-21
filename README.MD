@@ -41,10 +41,13 @@ The core value: **it just works, entirely within your network, with zero setup o
 
 Double-click **`run.bat`** in the project root folder. It will:
 
-1. Build the frontend
-2. Build the backend
-3. Open your browser to the local site
-4. Display a QR code in the terminal
+1. **Check prerequisites** — verifies Node.js, npm, and Go are installed and in PATH
+2. Build the frontend
+3. Build the backend
+4. Open your browser to the local site
+5. Display a QR code in the terminal
+
+If any prerequisite is missing, the script will tell you exactly what to install and where to get it.
 
 That's it. Scan the QR code with your phone and start transferring files.
 
@@ -145,8 +148,10 @@ All endpoints are prefixed with `/api`.
 | `POST` | `/api/upload?from=controller\|viewer` | Upload files (routed by sender role) |
 | `GET` | `/api/uploads/from-mobile` | List files uploaded by phone |
 | `GET` | `/api/uploads/from-mobile/download/:filename` | Download a mobile-uploaded file |
+| `GET` | `/api/uploads/from-mobile/download-all` | Download all mobile-uploaded files as ZIP |
 | `GET` | `/api/uploads/from-pc` | List files uploaded by PC |
 | `GET` | `/api/uploads/from-pc/download/:filename` | Download a PC-uploaded file |
+| `GET` | `/api/uploads/from-pc/download-all` | Download all PC-uploaded files as ZIP |
 | `DELETE` | `/api/uploads/from-mobile` | Clear all mobile-uploaded files |
 | `DELETE` | `/api/uploads/from-pc` | Clear all PC-uploaded files |
 | `GET` | `/api/session/state` | Get current session state |
