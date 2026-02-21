@@ -29,13 +29,17 @@ export default function ClearUploadsButton({
 }: ClearUploadsButtonProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleConfirm = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       await clearFn();
       onCleared?.();
-    } catch {
+    } catch (err) {
+      console.error("Clear failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to clear files");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -44,6 +48,13 @@ export default function ClearUploadsButton({
 
   return (
     <>
+      {error && (
+        <div className="flex items-center gap-2 py-2 px-3 rounded-lg bg-red-500/10 border border-red-500/20">
+          <span className="w-2 h-2 rounded-full bg-red-400 shrink-0" />
+          <p className="text-sm text-red-400">{error}</p>
+        </div>
+      )}
+
       <button
         onClick={() => setOpen(true)}
         className="w-full py-2.5 px-4 rounded-xl text-sm font-medium text-red-400 border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/30 transition-all duration-200"

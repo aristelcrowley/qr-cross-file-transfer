@@ -16,13 +16,14 @@ import (
 
 func New(cfg *config.AppConfig) *fiber.App {
 	app := fiber.New(fiber.Config{
-		AppName: "qr-cross-file-transfer",
+		AppName:   "qr-cross-file-transfer",
 		BodyLimit: 2 * 1024 * 1024 * 1024,
 	})
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,DELETE,OPTIONS",
+		AllowHeaders: "Origin,Content-Type,Accept",
 	}))
 
 	fh := handlers.NewFileHandler(cfg)
