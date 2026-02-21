@@ -6,6 +6,52 @@ set PORT=8080
 set SHARE=.
 
 echo.
+echo  ===================================
+echo   QR Cross File Transfer
+echo  ===================================
+echo.
+
+echo [0/3] Checking prerequisites...
+
+where node >nul 2>&1
+if %errorlevel% neq 0 (
+    echo.
+    echo  [ERROR] Node.js is not installed or not in PATH.
+    echo  Please install Node.js 18+ from https://nodejs.org/
+    echo.
+    pause
+    exit /b 1
+)
+
+where npm >nul 2>&1
+if %errorlevel% neq 0 (
+    echo.
+    echo  [ERROR] npm is not installed or not in PATH.
+    echo  It should come bundled with Node.js.
+    echo  Please reinstall Node.js from https://nodejs.org/
+    echo.
+    pause
+    exit /b 1
+)
+
+where go >nul 2>&1
+if %errorlevel% neq 0 (
+    echo.
+    echo  [ERROR] Go is not installed or not in PATH.
+    echo  Please install Go 1.23+ from https://go.dev/dl/
+    echo  After installing, restart your terminal.
+    echo.
+    pause
+    exit /b 1
+)
+
+for /f "tokens=*" %%v in ('node -v 2^>nul') do set NODE_VER=%%v
+for /f "tokens=*" %%v in ('go version 2^>nul') do set GO_VER=%%v
+echo  Node.js : %NODE_VER%
+echo  Go      : %GO_VER%
+echo.
+
+echo.
 echo [1/3] Building frontend...
 cd frontend
 if not exist node_modules (
