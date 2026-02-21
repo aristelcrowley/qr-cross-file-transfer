@@ -13,12 +13,12 @@ interface ClearUploadsButtonProps {
 
 const labels: Record<UploadSource, { action: string; folder: string }> = {
   "from-mobile": {
-    action: "Clear Sent Files",
-    folder: "from-mobile (files you sent by mobile)",
+    action: "Clear Received Files",
+    folder: "from-mobile (files received from phone)",
   },
   "from-pc": {
     action: "Clear Received Files",
-    folder: "from-pc (files you sent by PC)",
+    folder: "from-pc (files received from PC)",
   },
 };
 

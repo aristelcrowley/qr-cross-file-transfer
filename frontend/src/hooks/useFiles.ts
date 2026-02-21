@@ -13,8 +13,6 @@ import {
 } from "@/services/file.service";
 import type { FileEntry, Role } from "@/types";
 
-// ── useUpload ──
-
 interface UseUploadReturn {
   selected: File[];
   addFiles: (files: FileList | File[]) => void;
@@ -35,7 +33,6 @@ export function useUpload(): UseUploadReturn {
   const [error, setError] = useState<string | null>(null);
   const roleRef = useRef<Role>("controller");
 
-  // Resolve role after hydration.
   useEffect(() => {
     roleRef.current = getRole() ?? "controller";
   }, []);
@@ -82,7 +79,6 @@ export function useUpload(): UseUploadReturn {
   return { selected, addFiles, removeFile, upload, uploading, progress, done, error, reset };
 }
 
-// ── useFileList ──
 
 interface UseFileListReturn {
   files: FileEntry[];
@@ -93,13 +89,6 @@ interface UseFileListReturn {
   downloadAllUrl: string;
 }
 
-/**
- * Fetches the file list the *other* side uploaded:
- * - viewer (PC) → from-mobile dir (files the phone sent)
- * - controller (phone) → from-pc dir (files the PC sent)
- *
- * Polls every `intervalMs` for changes.
- */
 export function useFileList(intervalMs = 3000): UseFileListReturn {
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,7 +96,6 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
   const [viewer, setViewer] = useState(false);
   const viewerRef = useRef(false);
 
-  // Resolve role after hydration.
   useEffect(() => {
     const v = getRole() === "viewer";
     setViewer(v);
@@ -118,7 +106,6 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
     setLoading(true);
     setError(null);
     try {
-      // Viewer (PC) sees what mobile uploaded, controller (phone) sees what PC uploaded.
       const res = viewerRef.current
         ? await listMobileUploads()
         : await listPCUploads();
@@ -130,7 +117,6 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
     }
   }, []);
 
-  // Fetch on mount + poll.
   useEffect(() => {
     const resolved = getRole() !== null;
     if (!resolved) return;

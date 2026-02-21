@@ -9,7 +9,7 @@ import { useViewerNavigation } from "@/hooks/useViewerNavigation";
 import { isController } from "@/hooks/useRole";
 import { useFileList } from "@/hooks/useFiles";
 import { setSessionState } from "@/services/session.service";
-import { clearPCUploads } from "@/services/file.service";
+import { clearPCUploads, clearMobileUploads } from "@/services/file.service";
 
 export default function ReceivePage() {
   useViewerNavigation();
@@ -61,10 +61,16 @@ export default function ReceivePage() {
 
         <DownloadAllButton href={downloadAllUrl} fileCount={files.length} />
 
-        {isController() && (
+        {isController() ? (
           <ClearUploadsButton
             source="from-pc"
             clearFn={clearPCUploads}
+            onCleared={refresh}
+          />
+        ) : (
+          <ClearUploadsButton
+            source="from-mobile"
+            clearFn={clearMobileUploads}
             onCleared={refresh}
           />
         )}

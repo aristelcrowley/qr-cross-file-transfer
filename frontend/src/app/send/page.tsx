@@ -6,12 +6,10 @@ import SelectedFilesList from "@/components/send/SelectedFilesList";
 import UploadProgress from "@/components/send/UploadProgress";
 import SendButton from "@/components/send/SendButton";
 import StatusMessage from "@/components/send/StatusMessage";
-import ClearUploadsButton from "@/components/shared/ClearUploadsButton";
 import { useViewerNavigation } from "@/hooks/useViewerNavigation";
 import { isController } from "@/hooks/useRole";
 import { useUpload } from "@/hooks/useFiles";
 import { setSessionState } from "@/services/session.service";
-import { clearMobileUploads } from "@/services/file.service";
 
 export default function SendPage() {
   useViewerNavigation();
@@ -59,14 +57,6 @@ export default function SendPage() {
           progress={progress}
           onClick={upload}
         />
-
-        {isController() && (
-          <ClearUploadsButton
-            source="from-mobile"
-            clearFn={clearMobileUploads}
-            onCleared={reset}
-          />
-        )}
       </section>
     </>
   );
