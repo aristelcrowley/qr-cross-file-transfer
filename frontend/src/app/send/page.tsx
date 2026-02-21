@@ -23,7 +23,6 @@ export default function SendPage() {
     progress,
     done,
     error,
-    reset,
   } = useUpload();
 
   const handleBack = async () => {
