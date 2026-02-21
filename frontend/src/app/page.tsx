@@ -2,8 +2,6 @@
 
 import Hero from "@/components/hero/Hero";
 import QRCard from "@/components/qr/QRCard";
-import FeatureList from "@/components/hero/FeatureList";
-import Footer from "@/components/layout/Footer";
 import { useEffect } from "react";
 import { setRole } from "@/hooks/useRole";
 import { useViewerNavigation } from "@/hooks/useViewerNavigation";
@@ -15,8 +13,6 @@ export default function Home() {
     <>
       <Hero />
       <QRCard />
-      <FeatureList />
-      <Footer />
     </>
   );
 }
