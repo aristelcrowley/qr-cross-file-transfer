@@ -74,13 +74,6 @@ echo  Frontend built -^> frontend/out/
 
 echo.
 echo [2/3] Building backend...
-echo  Running go mod tidy...
-go mod tidy 
-if %errorlevel% neq 0 (
-    echo  [ERROR] Go mod tidy failed!
-    pause
-    exit /b 1
-)
 go build -o bin\qr-cross-file-transfer.exe ./cmd/app
 if %errorlevel% neq 0 (
     echo  Backend build failed!
