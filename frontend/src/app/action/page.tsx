@@ -14,8 +14,8 @@ export default function ActionPage() {
 
   return (
     <>
-      <section className="text-center space-y-2">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-clay-heading">
+      <section className="text-center space-y-3">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gradient">
           What would you like to do?
         </h1>
         <p className="text-sm text-clay-muted">

@@ -36,10 +36,12 @@ export default function SendPage() {
     <>
       {isController() && <BackLink href="/action" onClick={handleBack} />}
 
-      <section className="clay-card p-6 sm:p-8 max-w-lg w-full mx-auto space-y-5">
-        <div className="text-center">
-          <span className="text-5xl block mb-3">📤</span>
-          <h1 className="text-2xl font-bold text-clay-heading mb-1">
+      <section className="clay-card p-6 sm:p-8 max-w-lg w-full mx-auto space-y-6">
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl clay-badge text-2xl">
+            📤
+          </div>
+          <h1 className="text-2xl font-bold text-clay-heading">
             Send Files
           </h1>
           <p className="text-sm text-clay-muted">

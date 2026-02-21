@@ -18,18 +18,18 @@ export default function SelectedFilesList({
       {files.map((file, i) => (
         <li
           key={file.name + file.size}
-          className="flex items-center justify-between clay-inset rounded-xl px-4 py-2.5 text-sm"
+          className="flex items-center justify-between clay-inset rounded-xl px-4 py-3 text-sm group hover:border-white/12 transition-colors duration-200"
         >
           <span className="truncate text-clay-heading font-medium pr-3">
             {file.name}
           </span>
           <div className="flex items-center gap-3 shrink-0">
-            <span className="text-clay-muted text-xs">
+            <span className="text-clay-muted text-xs tabular-nums">
               {formatBytes(file.size)}
             </span>
             <button
               onClick={() => onRemove(i)}
-              className="text-clay-muted hover:text-red-400 transition-colors text-lg leading-none"
+              className="text-slate-500 hover:text-red-400 transition-colors duration-200 text-lg leading-none"
             >
               ×
             </button>

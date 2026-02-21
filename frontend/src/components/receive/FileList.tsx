@@ -22,7 +22,7 @@ export default function FileList({ files, getDownloadUrl }: FileListProps) {
           />
         ))}
       </ul>
-      <p className="text-xs text-clay-muted text-center">
+      <p className="text-xs text-slate-500 text-center tabular-nums">
         {files.length} file{files.length !== 1 ? "s" : ""} available
       </p>
     </>

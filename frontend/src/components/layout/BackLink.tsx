@@ -25,9 +25,9 @@ export default function BackLink({
     <Link
       href={href}
       onClick={handleClick}
-      className="inline-flex items-center gap-1.5 text-sm font-medium text-clay-muted hover:text-clay-heading transition-colors self-start"
+      className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-indigo-400 transition-colors duration-200 self-start group"
     >
-      <span className="text-lg leading-none">←</span>
+      <span className="text-lg leading-none group-hover:-translate-x-0.5 transition-transform duration-200">←</span>
       <span>{label}</span>
     </Link>
   );

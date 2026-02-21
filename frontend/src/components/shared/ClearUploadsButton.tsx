@@ -46,7 +46,7 @@ export default function ClearUploadsButton({
     <>
       <button
         onClick={() => setOpen(true)}
-        className="clay-btn w-full bg-red-400/10! text-red-400! hover:bg-red-400/20! text-sm"
+        className="w-full py-2.5 px-4 rounded-xl text-sm font-medium text-red-400 border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/30 transition-all duration-200"
       >
         🗑️ {labels[source].action}
       </button>

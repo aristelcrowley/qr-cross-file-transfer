@@ -24,9 +24,9 @@ export default function FeatureList() {
       {features.map((f) => (
         <div
           key={f.title}
-          className="clay-card p-5 text-center space-y-2"
+          className="clay-card p-6 text-center space-y-3 group hover:border-indigo-500/20 transition-all duration-300"
         >
-          <span className="text-2xl block">{f.icon}</span>
+          <span className="text-2xl block group-hover:scale-110 transition-transform duration-300">{f.icon}</span>
           <h3 className="text-sm font-bold text-clay-heading">{f.title}</h3>
           <p className="text-xs text-clay-muted leading-relaxed">{f.desc}</p>
         </div>

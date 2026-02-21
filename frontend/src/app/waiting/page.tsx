@@ -8,8 +8,8 @@ export default function WaitingPage() {
 
   return (
     <>
-      <section className="text-center space-y-5">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl clay-badge text-3xl">
+      <section className="clay-card p-10 sm:p-12 max-w-sm w-full mx-auto text-center space-y-6">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl clay-badge text-2xl">
           📱
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-clay-heading">
@@ -19,9 +19,9 @@ export default function WaitingPage() {
           Waiting for the phone to choose an action…
         </p>
         <div className="flex items-center justify-center gap-2 pt-2">
-          <span className="w-2 h-2 rounded-full bg-clay-muted/50 animate-bounce [animation-delay:0ms]" />
-          <span className="w-2 h-2 rounded-full bg-clay-muted/50 animate-bounce [animation-delay:150ms]" />
-          <span className="w-2 h-2 rounded-full bg-clay-muted/50 animate-bounce [animation-delay:300ms]" />
+          <span className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0ms]" />
+          <span className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:150ms]" />
+          <span className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:300ms]" />
         </div>
       </section>
       <Footer />
