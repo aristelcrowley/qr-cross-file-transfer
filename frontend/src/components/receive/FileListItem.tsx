@@ -17,7 +17,7 @@ export default function FileListItem({ file, downloadUrl }: FileListItemProps) {
         download
         className="flex items-center gap-3.5 no-underline"
       >
-        <FilePreview fileName={file.name} downloadUrl={downloadUrl} />
+        <FilePreview fileName={file.name} />
 
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-clay-heading truncate group-hover:text-indigo-300 transition-colors duration-200">

@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
 interface FilePreviewProps {
   fileName: string;
-  downloadUrl: string;
 }
 
 const IMAGE_EXTS = new Set([
@@ -79,26 +76,9 @@ function getCategory(filename: string): FileCategory {
   return EXT_MAP[ext] ?? "unknown";
 }
 
-export default function FilePreview({ fileName, downloadUrl }: FilePreviewProps) {
-  const [imgError, setImgError] = useState(false);
+export default function FilePreview({ fileName }: FilePreviewProps) {
   const category = getCategory(fileName);
   const ext = getExtension(fileName);
-
-  if (category === "image" && !imgError) {
-    return (
-      <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-white/10 shrink-0 bg-black/20">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={downloadUrl}
-          alt={fileName}
-          onError={() => setImgError(true)}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
-      </div>
-    );
-  }
-
   const style = CATEGORY_STYLES[category];
 
   return (
