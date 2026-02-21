@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"archive/zip"
+	"bufio"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -184,4 +187,65 @@ func (h *UploadHandler) ClearMobileUploads(c *fiber.Ctx) error {
 
 func (h *UploadHandler) ClearPCUploads(c *fiber.Ctx) error {
 	return h.clearDir(h.cfg.PCUploadDir, c)
+}
+
+func (h *UploadHandler) downloadAllZip(dir string, archiveName string, c *fiber.Ctx) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return c.Status(fiber.StatusNotFound).JSON(dto.ErrorResponse{
+				Error: "no files to download",
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(dto.ErrorResponse{
+			Error: fmt.Sprintf("cannot read directory: %v", err),
+		})
+	}
+
+	var files []os.DirEntry
+	for _, e := range entries {
+		if !e.IsDir() {
+			files = append(files, e)
+		}
+	}
+	if len(files) == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(dto.ErrorResponse{
+			Error: "no files to download",
+		})
+	}
+
+	c.Set("Content-Type", "application/zip")
+	c.Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, archiveName))
+
+	c.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
+		zw := zip.NewWriter(w)
+		defer zw.Close()
+
+		for _, entry := range files {
+			path := filepath.Join(dir, entry.Name())
+			f, err := os.Open(path)
+			if err != nil {
+				continue
+			}
+
+			writer, err := zw.Create(entry.Name())
+			if err != nil {
+				f.Close()
+				continue
+			}
+
+			io.Copy(writer, f)
+			f.Close()
+		}
+	})
+
+	return nil
+}
+
+func (h *UploadHandler) DownloadAllMobileUploads(c *fiber.Ctx) error {
+	return h.downloadAllZip(h.cfg.MobileUploadDir, "received-from-mobile.zip", c)
+}
+
+func (h *UploadHandler) DownloadAllPCUploads(c *fiber.Ctx) error {
+	return h.downloadAllZip(h.cfg.PCUploadDir, "received-from-pc.zip", c)
 }

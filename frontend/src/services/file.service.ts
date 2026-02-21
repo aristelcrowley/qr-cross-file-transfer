@@ -91,3 +91,13 @@ export async function clearPCUploads(): Promise<{ message: string; deleted: numb
   if (!res.ok) throw new Error("Failed to clear PC uploads");
   return res.json();
 }
+
+// ── Download all as ZIP ──
+
+export function getDownloadAllMobileUrl(): string {
+  return `${API_BASE}/api/uploads/from-mobile/download-all`;
+}
+
+export function getDownloadAllPCUrl(): string {
+  return `${API_BASE}/api/uploads/from-pc/download-all`;
+}

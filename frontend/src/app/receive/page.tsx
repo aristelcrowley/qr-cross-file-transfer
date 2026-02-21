@@ -3,6 +3,7 @@
 import BackLink from "@/components/layout/BackLink";
 import FileList from "@/components/receive/FileList";
 import EmptyState from "@/components/receive/EmptyState";
+import DownloadAllButton from "@/components/receive/DownloadAllButton";
 import ClearUploadsButton from "@/components/shared/ClearUploadsButton";
 import { useViewerNavigation } from "@/hooks/useViewerNavigation";
 import { isController } from "@/hooks/useRole";
@@ -13,7 +14,7 @@ import { clearPCUploads } from "@/services/file.service";
 export default function ReceivePage() {
   useViewerNavigation();
 
-  const { files, loading, error, getDownloadUrl, refresh } = useFileList();
+  const { files, loading, error, getDownloadUrl, refresh, downloadAllUrl } = useFileList();
 
   const handleBack = async () => {
     await setSessionState("WAITING");
@@ -57,6 +58,8 @@ export default function ReceivePage() {
         {!loading && files.length === 0 && !error && <EmptyState />}
 
         <FileList files={files} getDownloadUrl={getDownloadUrl} />
+
+        <DownloadAllButton href={downloadAllUrl} fileCount={files.length} />
 
         {isController() && (
           <ClearUploadsButton

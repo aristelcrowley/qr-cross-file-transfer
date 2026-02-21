@@ -8,6 +8,8 @@ import {
   listPCUploads,
   getMobileUploadUrl,
   getPCUploadUrl,
+  getDownloadAllMobileUrl,
+  getDownloadAllPCUrl,
 } from "@/services/file.service";
 import type { FileEntry, Role } from "@/types";
 
@@ -88,6 +90,7 @@ interface UseFileListReturn {
   error: string | null;
   refresh: () => Promise<void>;
   getDownloadUrl: (filename: string) => string;
+  downloadAllUrl: string;
 }
 
 /**
@@ -146,5 +149,9 @@ export function useFileList(intervalMs = 3000): UseFileListReturn {
     [viewer]
   );
 
-  return { files, loading, error, refresh, getDownloadUrl };
+  const downloadAllUrl = viewerRef.current
+    ? getDownloadAllMobileUrl()
+    : getDownloadAllPCUrl();
+
+  return { files, loading, error, refresh, getDownloadUrl, downloadAllUrl };
 }
