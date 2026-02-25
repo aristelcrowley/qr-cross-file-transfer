@@ -17,7 +17,7 @@ import (
 func New(cfg *config.AppConfig) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName:   "qr-cross-file-transfer",
-		BodyLimit: 2 * 1024 * 1024 * 1024,
+		BodyLimit: 10 * 1024 * 1024 * 1024,
 	})
 
 	app.Use(cors.New(cors.Config{
